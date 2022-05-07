@@ -2,11 +2,13 @@
   "name": "finnworkspace",
 	"displayName": "Finn's Workspace List",
 	"description": "Sublime style quick switch workspace, along with more workspace managements.",
-	"version": "0.0.1",
+	"version": "0.9.0",
 	"engines": {
 		"vscode": "^1.59.0"
 	},
 	"categories": [
+		"Keymaps",
+		"Extension Packs",
 		"Other"
 	],
 	"activationEvents": [
@@ -38,6 +40,12 @@
 			}
 		]
 	},
+	"repository": {
+	  "type": "git",
+	  "url": "https://github.com/woncomp/finnworkspace.git"
+	},
+	"icon": "images/icon.png",
+	"publisher": "LexicalWorks",
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
