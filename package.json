@@ -10,14 +10,21 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:finnworkspace.helloWorld"
+        "onCommand:finnworkspace.quickswitch"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "finnworkspace.helloWorld",
-				"title": "Hello World"
+				"command": "finnworkspace.quickswitch",
+				"title": "Finn's Quick Switch Workspace"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "finnworkspace.quickswitch",
+				"key": "ctrl+alt+p",
+				"mac": "ctrl+cmd+p"
 			}
 		]
 	},
