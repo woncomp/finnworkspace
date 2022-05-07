@@ -1,11 +1,23 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 import { basename } from 'path';
 
 type FavItem = [string, string];
 
 const KeyFavoriteWorkspaces = 'finnworkspace.favorites';
+const LabelNoKnownWorkspace = 'No known workspace';
+
+function pathExists(path: string): boolean {
+	try
+	{
+		fs.accessSync(path, fs.constants.R_OK);
+	} catch (err) {
+		return false;
+	}
+	return true;
+}
 
 function getFavorites(context: vscode.ExtensionContext): FavItem[] {
 	return context.globalState.get(KeyFavoriteWorkspaces) as FavItem[];
@@ -26,10 +38,16 @@ async function favoriteAdd(context: vscode.ExtensionContext) {
 	for(let recentItem of recentlyOpened.workspaces) {
 		if('workspace' in recentItem) {
 			let path = recentItem.workspace.configPath.fsPath;
-			if(!favPaths.has(path)) {
-				items.push(path);
-			}
+			if(favPaths.has(path)) continue;
+			if(!pathExists(path)) continue;
+
+			items.push(path);
 		}
+	}
+
+	if(items.length == 0)
+	{
+		items.push(LabelNoKnownWorkspace);
 	}
 
 	let options: vscode.QuickPickOptions = {
@@ -42,6 +60,7 @@ async function favoriteAdd(context: vscode.ExtensionContext) {
 
 	let pickedWorkspacePath = await vscode.window.showQuickPick(items, options);
 	if(!pickedWorkspacePath) return;
+	if(!pathExists(pickedWorkspacePath)) return;
 
 	let defaultWorkspaceName = basename(pickedWorkspacePath, ".code-workspace");
 	const result = await vscode.window.showInputBox({
@@ -62,11 +81,22 @@ async function favoriteRemove(context: vscode.ExtensionContext) {
 	let favs = getFavorites(context);
 	if(favs) {
 		for(let fav of favs) {
+			let path: string = fav[1];
+
+			let label = pathExists(path) ? fav[0] : fav[0] + ' (deleted)';
+
 			items.push( {
-				label: fav[0],
-				description: fav[1],
+				label: label,
+				description: path,
 			});
 		};
+	}
+
+	if(items.length == 0)
+	{
+		items.push( {
+			label: LabelNoKnownWorkspace
+		});
 	}
 
 	let options: vscode.QuickPickOptions = {
@@ -79,6 +109,7 @@ async function favoriteRemove(context: vscode.ExtensionContext) {
 
 	let pickedItem = await vscode.window.showQuickPick(items, options);
 	if(!pickedItem) return;
+	if(pickedItem.label == LabelNoKnownWorkspace) return;
 
 	const path = pickedItem.description ?? "";
 	if(!path) return;
@@ -97,11 +128,15 @@ async function quickSwitch(context: vscode.ExtensionContext) {
 	let favs = getFavorites(context);
 	if(favs) {
 		for(let fav of favs) {
+			let path: string = fav[1];
+			addedPaths.add(path);
+
+			if(!pathExists(path)) continue;
+
 			items.push( {
 				label: fav[0],
-				description: fav[1],
+				description: path,
 			});
-			addedPaths.add(fav[1])
 		};
 	}
 
@@ -110,15 +145,24 @@ async function quickSwitch(context: vscode.ExtensionContext) {
 	for(let recentItem of recentlyOpened.workspaces) {
 		if('workspace' in recentItem) {
 			let path = recentItem.workspace.configPath.fsPath;
-			if(!addedPaths.has(path)) {
-				index += 1;
-				items.push( {
-					label: "[Recent " + index + "]",
-					description: path,
-				});
-				addedPaths.add(path);
-			}
+
+			if(addedPaths.has(path)) continue;
+			addedPaths.add(path);
+			if(!pathExists(path)) continue;
+
+			index += 1;
+			items.push( {
+				label: "[Recent " + index + "]",
+				description: path,
+			});
 		}
+	}
+
+	if(items.length == 0)
+	{
+		items.push( {
+			label: LabelNoKnownWorkspace
+		});
 	}
 
 	let options: vscode.QuickPickOptions = {
@@ -132,7 +176,7 @@ async function quickSwitch(context: vscode.ExtensionContext) {
 	let pickedItem = await vscode.window.showQuickPick(items, options);
 	let path = pickedItem?.description ?? null;
 
-	if(path){
+	if(path && pathExists(path)){
 		let workspaceUri = vscode.Uri.file(path);
 		// Open the Workspace
 		await vscode.commands.executeCommand('vscode.openFolder', workspaceUri);
