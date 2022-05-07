@@ -33,7 +33,7 @@ async function favoriteAdd(context: vscode.ExtensionContext) {
 	}
 
 	let options: vscode.QuickPickOptions = {
-		placeHolder: "Select the Workspace you want to add to Favorite:",
+		placeHolder: "Select the Workspace you want to add to Favorites:",
 		canPickMany: false,
 		ignoreFocusOut: true,
 		matchOnDescription: true,
@@ -46,7 +46,7 @@ async function favoriteAdd(context: vscode.ExtensionContext) {
 	let defaultWorkspaceName = basename(pickedWorkspacePath, ".code-workspace");
 	const result = await vscode.window.showInputBox({
 		value: defaultWorkspaceName,
-		prompt: 'Please give a name for this workspace, this name is also used for filtering.'
+		prompt: 'Please give a name to this workspace, this name is also used for filtering.'
 	});
 	if(!result) return;
 
@@ -54,6 +54,39 @@ async function favoriteAdd(context: vscode.ExtensionContext) {
 	context.globalState.update(KeyFavoriteWorkspaces, favs);
 
 	vscode.window.showInformationMessage('Workspace added to Favorites:\n' + pickedWorkspacePath);
+}
+
+async function favoriteRemove(context: vscode.ExtensionContext) {
+	let items: vscode.QuickPickItem[] = [];
+
+	let favs = getFavorites(context);
+	if(favs) {
+		for(let fav of favs) {
+			items.push( {
+				label: fav[0],
+				description: fav[1],
+			});
+		};
+	}
+
+	let options: vscode.QuickPickOptions = {
+		placeHolder: "Select the Workspace you want to remove from Favorites:",
+		canPickMany: false,
+		ignoreFocusOut: true,
+		matchOnDescription: true,
+		matchOnDetail: true
+	};
+
+	let pickedItem = await vscode.window.showQuickPick(items, options);
+	if(!pickedItem) return;
+
+	const path = pickedItem.description ?? "";
+	if(!path) return;
+
+	favs = favs.filter( x => x[1] !== path);
+	context.globalState.update(KeyFavoriteWorkspaces, favs);
+
+	vscode.window.showInformationMessage('Workspace removed from Favorites:\n' + path);
 }
 
 async function quickSwitch(context: vscode.ExtensionContext) {
@@ -109,11 +142,15 @@ async function quickSwitch(context: vscode.ExtensionContext) {
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	context.subscriptions.push(vscode.commands.registerCommand('finnworkspace.favorite-add', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('finnworkspace.favoriteAdd', () => {
 		favoriteAdd(context);
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('finnworkspace.quickswitch', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('finnworkspace.favoriteRemove', () => {
+		favoriteRemove(context);
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('finnworkspace.quickSwitch', () => {
 		quickSwitch(context);
 	}));
 }

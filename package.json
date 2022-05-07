@@ -10,24 +10,29 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:finnworkspace.favorite-add",
-		"onCommand:finnworkspace.quickswitch"
+		"onCommand:finnworkspace.favoriteAdd",
+		"onCommand:finnworkspace.favoriteRemove",
+		"onCommand:finnworkspace.quickSwitch"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "finnworkspace.favorite-add",
-				"title": "Finn's Workspace List - Add to Favoriate"
+				"command": "finnworkspace.favoriteAdd",
+				"title": "Finn's Workspace List - Add to Favoriates"
 			},
 			{
-				"command": "finnworkspace.quickswitch",
+				"command": "finnworkspace.favoriteRemove",
+				"title": "Finn's Workspace List - Remove from Favoriates"
+			},
+			{
+				"command": "finnworkspace.quickSwitch",
 				"title": "Finn's Quick Switch Workspace"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "finnworkspace.quickswitch",
+				"command": "finnworkspace.quickSwitch",
 				"key": "ctrl+alt+p",
 				"mac": "ctrl+cmd+p"
 			}
