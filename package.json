@@ -2,7 +2,7 @@
 	"name": "finnworkspace",
 	"displayName": "Finn's Workspace List",
 	"description": "Sublime style quick switch workspace, along with a little more workspace managements.",
-	"version": "0.9.1",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.50.0"
 	},

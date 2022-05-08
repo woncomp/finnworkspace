@@ -43,6 +43,9 @@ N/A
 
 ## Release Notes
 
+### 1.0.0
+* Initial release. Including quick switch and Favorites management.
+
 ### 0.9.1
 * Supported oldest VSCode version pushed back to 1.50.X.
 * Improve documentation.

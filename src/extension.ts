@@ -170,7 +170,22 @@ async function quickSwitch(context: vscode.ExtensionContext) {
 	let pickedItem = await vscode.window.showQuickPick(items, options);
 	let path = pickedItem?.description ?? null;
 
-	if(path && pathExists(path)){
+	if(path && pathExists(path)) {
+		// Update the fav list if the selected path is in Favorite
+		function _move_to_front(path: string) {
+			for(let idx=0; idx<favs.length; idx++) {
+				let fav = favs[idx];
+				if(fav[1] != path) continue;
+	
+				favs.splice(idx, 1);
+				favs.splice(0, 0, fav);
+				break;
+			}
+		}
+		_move_to_front(path);
+		_move_to_front(vscode.workspace.workspaceFile?.fsPath ?? "");
+		context.globalState.update(KeyFavoriteWorkspaces, favs);
+
 		let workspaceUri = vscode.Uri.file(path);
 		// Open the Workspace
 		await vscode.commands.executeCommand('vscode.openFolder', workspaceUri);
