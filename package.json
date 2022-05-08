@@ -1,14 +1,13 @@
 {
-  "name": "finnworkspace",
+	"name": "finnworkspace",
 	"displayName": "Finn's Workspace List",
-	"description": "Sublime style quick switch workspace, along with more workspace managements.",
-	"version": "0.9.0",
+	"description": "Sublime style quick switch workspace, along with a little more workspace managements.",
+	"version": "0.9.1",
 	"engines": {
-		"vscode": "^1.59.0"
+		"vscode": "^1.50.0"
 	},
 	"categories": [
 		"Keymaps",
-		"Extension Packs",
 		"Other"
 	],
 	"activationEvents": [
@@ -21,15 +20,15 @@
 		"commands": [
 			{
 				"command": "finnworkspace.favoriteAdd",
-				"title": "Finn's Workspace List - Add to Favoriates"
+				"title": "Finn's Workspace List: Add to Favorites"
 			},
 			{
 				"command": "finnworkspace.favoriteRemove",
-				"title": "Finn's Workspace List - Remove from Favoriates"
+				"title": "Finn's Workspace List: Remove from Favorites"
 			},
 			{
 				"command": "finnworkspace.quickSwitch",
-				"title": "Finn's Quick Switch Workspace"
+				"title": "Finn's Workspace List: Quick Switch Workspace"
 			}
 		],
 		"keybindings": [
@@ -41,8 +40,8 @@
 		]
 	},
 	"repository": {
-	  "type": "git",
-	  "url": "https://github.com/woncomp/finnworkspace.git"
+		"type": "git",
+		"url": "https://github.com/woncomp/finnworkspace.git"
 	},
 	"icon": "images/icon.png",
 	"publisher": "LexicalWorks",
@@ -55,10 +54,10 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.59.0",
+		"@types/vscode": "^1.50.0",
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
-		"@types/node": "14.x",
+		"@types/node": "12.x",
 		"@typescript-eslint/eslint-plugin": "^5.21.0",
 		"@typescript-eslint/parser": "^5.21.0",
 		"eslint": "^8.14.0",

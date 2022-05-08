@@ -20,7 +20,7 @@ function pathExists(path: string): boolean {
 }
 
 function getFavorites(context: vscode.ExtensionContext): FavItem[] {
-	return context.globalState.get(KeyFavoriteWorkspaces) as FavItem[];
+	return context.globalState.get(KeyFavoriteWorkspaces) as FavItem[] ?? [];
 }
 
 async function favoriteAdd(context: vscode.ExtensionContext) {
@@ -28,10 +28,8 @@ async function favoriteAdd(context: vscode.ExtensionContext) {
 
 	let favPaths = new Set<string>();
 	let favs = getFavorites(context);
-	if(favs) {
-		for(let fav of favs) {
-			favPaths.add(fav[1]);
-		}
+	for(let fav of favs) {
+		favPaths.add(fav[1]);
 	}
 
 	const recentlyOpened: any = await vscode.commands.executeCommand('_workbench.getRecentlyOpened');
@@ -79,18 +77,16 @@ async function favoriteRemove(context: vscode.ExtensionContext) {
 	let items: vscode.QuickPickItem[] = [];
 
 	let favs = getFavorites(context);
-	if(favs) {
-		for(let fav of favs) {
-			let path: string = fav[1];
+	for(let fav of favs) {
+		let path: string = fav[1];
 
-			let label = pathExists(path) ? fav[0] : fav[0] + ' (deleted)';
+		let label = pathExists(path) ? fav[0] : fav[0] + ' (deleted)';
 
-			items.push( {
-				label: label,
-				description: path,
-			});
-		};
-	}
+		items.push( {
+			label: label,
+			description: path,
+		});
+	};
 
 	if(items.length == 0)
 	{
@@ -126,19 +122,17 @@ async function quickSwitch(context: vscode.ExtensionContext) {
 	let addedPaths = new Set<string>();
 
 	let favs = getFavorites(context);
-	if(favs) {
-		for(let fav of favs) {
-			let path: string = fav[1];
-			addedPaths.add(path);
+	for(let fav of favs) {
+		let path: string = fav[1];
+		addedPaths.add(path);
 
-			if(!pathExists(path)) continue;
+		if(!pathExists(path)) continue;
 
-			items.push( {
-				label: fav[0],
-				description: path,
-			});
-		};
-	}
+		items.push( {
+			label: fav[0],
+			description: path,
+		});
+	};
 
 	const recentlyOpened: any = await vscode.commands.executeCommand('_workbench.getRecentlyOpened');
 	let index: number = 0;
